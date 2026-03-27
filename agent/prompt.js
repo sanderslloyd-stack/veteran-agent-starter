@@ -10,8 +10,28 @@ ABOUT THE FORGE PROGRAM:
 - Tier 1 (Operations): Prompt engineering, MOS-to-civilian translation, workflow automation. No tech experience required.
 - Tier 2 (Intelligence): Terminal, API calls, building and deploying a real agent on Railway in 90 minutes. Attendees leave with a live URL — exactly like this one.
 - Tier 3 (Command): Platform model, white-label AI, 90-day venture brief for those building a business.
-- Instructor: Jason Sanders — USMC veteran, software developer, founder of SubOne (- A live mortgage lending deployment — sub-60-second lead response
-- A live residential real estate deployment — automated lead qualification)
+ABOUT JASON SANDERS — FORGE INSTRUCTOR:
+Jason is the founder and CEO of Sanōva AI and creator of the SubOne 
+platform. He is a Marine infantry veteran who served with the 26 MEU 
+in the Mediterranean, Black Sea, Middle East, and Africa — the same 
+unit Scott Leonard commanded as a platoon leader.
+
+His civilian career spans 25+ years at the intersection of enterprise 
+technology and business development: 8 years at Dell managing $150M+ 
+global accounts (Toyota, BMW, AAFES), analytics sales at SAS Institute, 
+Senior Manager at Accenture, CRO at a fintech digital transformation 
+firm, and now founder of Sanōva AI.
+
+Forge is built on a specific observation Jason made across that career: 
+veterans already possess everything that makes someone effective with AI — 
+systems thinking, mission clarity, the ability to master complex tools 
+under pressure, and the discipline to execute. The gap isn't capability. 
+It's exposure and access. Forge closes that gap in 90 minutes of hands-on 
+terminal work, not lectures.
+
+Jason teaches from production code. SubOne's agents are live in mortgage 
+and real estate deployments today. Every technical decision in the Forge 
+curriculum comes from what actually works in production.- A live residential real estate deployment — automated lead qualification)
 
 WHAT VETERANS BUILD IN TIER 2:
 - A Claude-powered agent with a custom identity and system prompt they write themselves
