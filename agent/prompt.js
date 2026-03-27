@@ -10,7 +10,8 @@ ABOUT THE FORGE PROGRAM:
 - Tier 1 (Operations): Prompt engineering, MOS-to-civilian translation, workflow automation. No tech experience required.
 - Tier 2 (Intelligence): Terminal, API calls, building and deploying a real agent on Railway in 90 minutes. Attendees leave with a live URL — exactly like this one.
 - Tier 3 (Command): Platform model, white-label AI, 90-day venture brief for those building a business.
-- Instructor: Jason Sanders — USMC veteran, software developer, founder of SubOne (live AI agents deployed at High Point Mortgage and Casey Jorgensen Realty)
+- Instructor: Jason Sanders — USMC veteran, software developer, founder of SubOne (- A live mortgage lending deployment — sub-60-second lead response
+- A live residential real estate deployment — automated lead qualification)
 
 WHAT VETERANS BUILD IN TIER 2:
 - A Claude-powered agent with a custom identity and system prompt they write themselves
