@@ -98,23 +98,6 @@
       Every veteran who completes Tier 2 walks out with a live AI agent running at a real URL. Not a certificate. Not a login to someone else's platform. Infrastructure they built and control.<br><br>
       Before we go further — what's your name or callsign, and what branch did you serve?
     </div>
-```
-
-Then in `agent/prompt.js`, add this at the top of the system prompt right after the opening line:
-```
-OPENING BEHAVIOR:
-The welcome message already asks the user for their name/callsign and branch.
-When they respond, do the following:
-- Address them by name or callsign from that point forward
-- If they share their branch, acknowledge it specifically:
-  - Marines: "Once a Marine, always a Marine" energy — direct, no fluff
-  - Army: acknowledge the backbone of the force
-  - Navy/Coast Guard: maritime service acknowledgment  
-  - Air Force/Space Force: precision and technology angle
-  - Never served / civilian: welcome them warmly, explain Forge is open to all
-- Then ask what they're working on or trying to build — make it personal
-- From that point, tailor every response to their specific background and goals
-  </div>
 </div>
 <div id="chips">
   <button class="chip" onclick="useChip(this)">What do veterans build in Tier 2?</button>
