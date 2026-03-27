@@ -3,365 +3,108 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agent</title>
+  <title>FORGE · Sanōva AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --navy:       #0B1628;
-      --navy-mid:   #152238;
-      --navy-light: #1E3050;
-      --gold:       #C9A84C;
-      --gold-dim:   #7A6030;
-      --teal:       #2DD4BF;
-      --text-1:     #F0EDE8;
-      --text-2:     #9BA8BB;
-      --text-3:     #5A6A80;
-      --border:     rgba(201,168,76,0.15);
-      --border-faint: rgba(201,168,76,0.07);
+      --navy:#0B1628; --navy-mid:#111f35; --navy-light:#172844; --navy-bd:#1e3352;
+      --gold:#C9A84C; --gold-lt:#e8c876; --gold-dim:#7a6030; --gold-faint:rgba(201,168,76,0.07);
+      --teal:#2DD4BF; --t1:#F0EDE8; --t2:#9BA8BB; --t3:#546070; --t4:#2e3d4f;
     }
-
-    html, body { height: 100%; }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--navy);
-      color: var(--text-1);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    /* ── Header ── */
-    header {
-      padding: 14px 20px;
-      border-bottom: 0.5px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
-    }
-
-    .avatar {
-      width: 34px; height: 34px;
-      border-radius: 8px;
-      background: var(--navy-mid);
-      border: 0.5px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    .avatar svg { width: 16px; height: 16px; }
-
-    .agent-name {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--gold);
-      letter-spacing: 0.02em;
-    }
-
-    .agent-sub {
-      font-size: 11px;
-      color: var(--text-3);
-      display: flex; align-items: center; gap: 5px;
-      margin-top: 1px;
-    }
-
-    .dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--teal);
-      animation: blink 2s ease-in-out infinite;
-    }
-
-    @keyframes blink {
-      0%,100% { opacity:1; }
-      50% { opacity:0.3; }
-    }
-
-    /* ── Messages ── */
-    #messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--navy-light) transparent;
-    }
-
-    #messages::-webkit-scrollbar { width: 3px; }
-    #messages::-webkit-scrollbar-thumb { background: var(--navy-light); border-radius: 2px; }
-
-    .msg {
-      display: flex; gap: 9px;
-      animation: fadeUp 0.2s ease-out;
-    }
-    .msg.user { flex-direction: row-reverse; }
-
-    @keyframes fadeUp {
-      from { opacity:0; transform:translateY(5px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
-
-    .msg-icon {
-      width: 24px; height: 24px;
-      border-radius: 5px;
-      font-size: 11px; font-weight: 500;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      margin-top: 2px;
-      border: 0.5px solid var(--border);
-      background: var(--navy-mid);
-    }
-
-    .msg.agent .msg-icon { color: var(--gold); }
-    .msg.user  .msg-icon { color: var(--teal); }
-
-    .bubble {
-      max-width: 80%;
-      padding: 10px 13px;
-      font-size: 13px;
-      line-height: 1.65;
-      border-radius: 10px;
-    }
-
-    .msg.agent .bubble {
-      background: var(--navy-mid);
-      border: 0.5px solid var(--border);
-      border-radius: 3px 10px 10px 10px;
-    }
-
-    .msg.user .bubble {
-      background: var(--navy-light);
-      border: 0.5px solid rgba(201,168,76,0.18);
-      border-radius: 10px 3px 10px 10px;
-    }
-
-    /* ── Typing indicator ── */
-    .typing { display:flex; gap:4px; align-items:center; padding:2px 0; }
-    .typing span {
-      width:5px; height:5px; border-radius:50%;
-      background: var(--text-3);
-      animation: bounce 1.1s ease-in-out infinite;
-    }
-    .typing span:nth-child(2) { animation-delay:.18s; }
-    .typing span:nth-child(3) { animation-delay:.36s; }
-
-    @keyframes bounce {
-      0%,80%,100% { transform:translateY(0); opacity:.4; }
-      40% { transform:translateY(-5px); opacity:1; }
-    }
-
-    /* ── Input area ── */
-    .input-area {
-      padding: 12px 20px 16px;
-      border-top: 0.5px solid var(--border);
-      display: flex; gap: 8px; align-items: flex-end;
-      flex-shrink: 0;
-    }
-
-    .input-wrap {
-      flex: 1;
-      background: var(--navy-mid);
-      border: 0.5px solid var(--border);
-      border-radius: 10px;
-      padding: 8px 12px;
-      display: flex; align-items: flex-end;
-      transition: border-color 0.15s;
-    }
-    .input-wrap:focus-within { border-color: var(--gold-dim); }
-
-    textarea {
-      flex: 1;
-      background: transparent;
-      border: none; outline: none;
-      color: var(--text-1);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      resize: none;
-      line-height: 1.5;
-      max-height: 120px;
-      scrollbar-width: none;
-    }
-    textarea::placeholder { color: var(--text-3); }
-    textarea::-webkit-scrollbar { display: none; }
-
-    button#send {
-      width: 34px; height: 34px;
-      border-radius: 8px;
-      background: var(--gold);
-      border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s;
-      flex-shrink: 0;
-    }
-    button#send:hover:not(:disabled) { background: #b8943e; }
-    button#send:disabled { background: var(--navy-light); cursor: not-allowed; }
-    button#send svg { width:14px; height:14px; }
-
-    .footer {
-      text-align: center;
-      font-size: 10px;
-      color: var(--text-3);
-      padding-bottom: 6px;
-      letter-spacing: 0.04em;
-    }
+    html,body{height:100%;background:var(--navy);color:var(--t1);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;}
+    body{display:flex;flex-direction:column;height:100vh;max-height:100dvh;}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,168,76,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.025) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;z-index:0;}
+    header{position:relative;z-index:10;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:76px;border-bottom:1px solid var(--navy-bd);background:var(--navy);}
+    .h-left{display:flex;align-items:center;gap:18px;}
+    .logomark{width:44px;height:44px;border:1px solid var(--gold-dim);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+    .logomark svg{width:22px;height:22px;}
+    .brand-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--gold);letter-spacing:0.2em;line-height:1;}
+    .brand-sub{font-size:11px;font-weight:300;color:var(--t3);letter-spacing:0.14em;text-transform:uppercase;margin-top:3px;}
+    .status-pill{display:flex;align-items:center;gap:8px;background:var(--gold-faint);border:1px solid rgba(201,168,76,0.14);border-radius:20px;padding:6px 16px;}
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2.5s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+    .status-txt{font-size:12px;color:var(--t2);letter-spacing:0.05em;}
+    .h-right{font-size:12px;color:var(--t4);letter-spacing:0.04em;}
+    #messages{position:relative;z-index:1;flex:1;overflow-y:auto;padding:36px 32px;display:flex;flex-direction:column;gap:24px;scrollbar-width:thin;scrollbar-color:var(--navy-light) transparent;}
+    #messages::-webkit-scrollbar{width:3px;}
+    #messages::-webkit-scrollbar-thumb{background:var(--navy-light);border-radius:2px;}
+    .msg{display:flex;gap:16px;animation:fadeUp 0.22s ease-out both;}
+    .msg.user{flex-direction:row-reverse;margin-left:auto;max-width:720px;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .av{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+    .msg.agent .av{background:var(--navy-light);border:1px solid var(--navy-bd);}
+    .msg.agent .av svg{width:18px;height:18px;}
+    .msg.user .av{background:var(--navy-mid);border:1px solid var(--navy-bd);font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--gold-dim);}
+    .bubble{padding:16px 20px;font-size:15px;line-height:1.75;max-width:700px;}
+    .msg.agent .bubble{background:var(--navy-mid);border:1px solid var(--navy-bd);border-left:2px solid var(--gold-dim);border-radius:2px 14px 14px 14px;color:var(--t1);}
+    .msg.user .bubble{background:var(--navy-light);border:1px solid rgba(201,168,76,0.18);border-radius:14px 2px 14px 14px;color:var(--t1);}
+    .bubble strong{color:var(--gold-lt);font-weight:500;}
+    .wtag{display:inline-block;font-size:10px;font-weight:500;color:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:2px 9px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;}
+    .typing{display:flex;gap:5px;align-items:center;padding:3px 0;}
+    .typing span{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:bounce 1.2s ease-in-out infinite;}
+    .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+    @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
+    #chips{position:relative;z-index:1;padding:0 32px 16px;display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;}
+    .chip{font-size:13px;color:var(--t3);border:1px solid var(--navy-bd);background:transparent;padding:7px 16px;border-radius:20px;cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+    .chip:hover{color:var(--gold);border-color:var(--gold-dim);background:var(--gold-faint);}
+    .input-area{position:relative;z-index:10;flex-shrink:0;padding:16px 32px 22px;border-top:1px solid var(--navy-bd);background:var(--navy);display:flex;gap:12px;align-items:flex-end;}
+    .input-wrap{flex:1;background:var(--navy-mid);border:1px solid var(--navy-bd);border-radius:12px;padding:13px 18px;display:flex;align-items:flex-end;transition:border-color 0.2s;}
+    .input-wrap:focus-within{border-color:var(--gold-dim);}
+    textarea{flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:400;resize:none;line-height:1.6;max-height:140px;scrollbar-width:none;}
+    textarea::placeholder{color:var(--t4);}
+    textarea::-webkit-scrollbar{display:none;}
+    .send-btn{width:48px;height:48px;border-radius:11px;background:var(--gold);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;}
+    .send-btn:hover:not(:disabled){background:var(--gold-lt);transform:translateY(-1px);}
+    .send-btn:active:not(:disabled){transform:translateY(0);}
+    .send-btn:disabled{background:var(--navy-light);cursor:not-allowed;}
+    .send-btn svg{width:18px;height:18px;}
+    footer{position:relative;z-index:1;text-align:center;padding:0 0 14px;font-size:11px;font-weight:300;color:var(--t4);letter-spacing:0.1em;text-transform:uppercase;flex-shrink:0;}
+    footer span{color:var(--gold-dim);}
   </style>
 </head>
 <body>
-
 <header>
-  <div class="avatar">
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round"/>
-      <path d="M2 17l10 5 10-5" stroke="#2DD4BF" stroke-width="1.5" stroke-linejoin="round" opacity="0.7"/>
-      <path d="M2 12l10 5 10-5" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round" opacity="0.4"/>
-    </svg>
+  <div class="h-left">
+    <div class="logomark">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M2 17l10 5 10-5" stroke="#2DD4BF" stroke-width="1.5" stroke-linejoin="round" opacity="0.8"/>
+        <path d="M2 12l10 5 10-5" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round" opacity="0.35"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand-name">FORGE</div>
+      <div class="brand-sub">Sanōva AI · Veteran Agent Program</div>
+    </div>
   </div>
-  <div>
-    <div class="agent-name" id="agentNameDisplay">Agent</div>
-    <div class="agent-sub"><span class="dot"></span><span id="agentSubDisplay">Ready</span></div>
-  </div>
+  <div class="status-pill"><div class="dot"></div><span class="status-txt">Online</span></div>
+  <div class="h-right">jason@sanova.ai</div>
 </header>
-
-<div id="messages"></div>
-
+<div id="messages">
+  <div class="msg agent">
+    <div class="av">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M2 17l10 5 10-5" stroke="#2DD4BF" stroke-width="1.5" stroke-linejoin="round" opacity="0.8"/>
+        <path d="M2 12l10 5 10-5" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round" opacity="0.35"/>
+      </svg>
+    </div>
+    <div class="bubble">
+      <div class="wtag">Forge · Live Demo Agent</div><br>
+      I'm a production AI agent — built on the exact same stack every veteran deploys in 90 minutes during the Forge Tier 2 workshop.<br><br>
+      <strong>Node.js · Anthropic Claude API · Railway.</strong> This is real infrastructure a veteran owns and controls when they walk out of the room.<br><br>
+      Ask me about the program, what veterans build here, or what's possible after the workshop.
+    </div>
+  </div>
+</div>
+<div id="chips">
+  <button class="chip" onclick="useChip(this)">What do veterans build in Tier 2?</button>
+  <button class="chip" onclick="useChip(this)">What can I do with this after the workshop?</button>
+  <button class="chip" onclick="useChip(this)">Who is Jason Sanders?</button>
+  <button class="chip" onclick="useChip(this)">Tell me about the investment case</button>
+</div>
 <div class="input-area">
   <div class="input-wrap">
-    <textarea id="input" rows="1" placeholder="Type a message..." autocomplete="off"></textarea>
-  </div>
-  <button id="send">
-    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
-         stroke-linecap="round" stroke-linejoin="round">
-      <line x1="22" y1="2" x2="11" y2="13"/>
-      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-    </svg>
-  </button>
-</div>
-<div class="footer">Powered by Sanōva AI · Forge Veteran AI Program</div>
-
-<script>
-  // ── State ──────────────────────────────────────────────────────────
-  let history = [];
-  let busy    = false;
-
-  // ── DOM refs ───────────────────────────────────────────────────────
-  const msgs   = document.getElementById('messages');
-  const input  = document.getElementById('input');
-  const sendBtn = document.getElementById('send');
-
-  // ── Boot: fetch agent metadata (optional env-driven customisation) ─
-  fetch('/health')
-    .then(r => r.json())
-    .then(d => {
-      if (d.agent) {
-        document.getElementById('agentNameDisplay').textContent = d.agent;
-        document.title = d.agent;
-      }
-      document.getElementById('agentSubDisplay').textContent = 'Online';
-    })
-    .catch(() => {});
-
-  // ── Auto-resize textarea ───────────────────────────────────────────
-  input.addEventListener('input', () => {
-    input.style.height = 'auto';
-    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
-  });
-
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      send();
-    }
-  });
-
-  sendBtn.addEventListener('click', send);
-
-  // ── Message rendering ──────────────────────────────────────────────
-  function addMsg(role, html) {
-    const wrap = document.createElement('div');
-    wrap.className = `msg ${role}`;
-
-    const icon = document.createElement('div');
-    icon.className = 'msg-icon';
-    icon.textContent = role === 'agent' ? 'A' : 'You';
-
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-    bubble.innerHTML = html;
-
-    wrap.appendChild(icon);
-    wrap.appendChild(bubble);
-    msgs.appendChild(wrap);
-    msgs.scrollTop = msgs.scrollHeight;
-    return bubble;
-  }
-
-  function addTyping() {
-    const wrap = document.createElement('div');
-    wrap.className = 'msg agent';
-    wrap.id = 'typing';
-    wrap.innerHTML = `
-      <div class="msg-icon" style="color:var(--gold);border:0.5px solid var(--border);background:var(--navy-mid)">A</div>
-      <div class="bubble" style="background:var(--navy-mid);border:0.5px solid var(--border)">
-        <div class="typing"><span></span><span></span><span></span></div>
-      </div>`;
-    msgs.appendChild(wrap);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  function removeTyping() {
-    document.getElementById('typing')?.remove();
-  }
-
-  function formatText(text) {
-    // Basic markdown: **bold**, newlines → <br>
-    return text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n/g, '<br>');
-  }
-
-  // ── Main send ──────────────────────────────────────────────────────
-  async function send() {
-    const text = input.value.trim();
-    if (!text || busy) return;
-
-    busy = true;
-    sendBtn.disabled = true;
-    input.value = '';
-    input.style.height = 'auto';
-
-    addMsg('user', formatText(text));
-    addTyping();
-
-    try {
-      const res = await fetch('/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, history }),
-      });
-
-      const data = await res.json();
-      removeTyping();
-
-      if (data.error) {
-        addMsg('agent', `<span style="color:#E24B4A">${data.error}</span>`);
-      } else {
-        history = data.history;
-        addMsg('agent', formatText(data.reply));
-      }
-    } catch {
-      removeTyping();
-      addMsg('agent', '<span style="color:#E24B4A">Network error — check your connection.</span>');
-    }
-
-    busy = false;
-    sendBtn.disabled = false;
-    input.focus();
-  }
-</script>
-</body>
-</html>
+    <textarea id="input" rows="1" placeholder="Ask Forge anything…" autocomplete="off"></
