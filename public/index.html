@@ -46,7 +46,7 @@
     .typing span{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:bounce 1.2s ease-in-out infinite;}
     .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
     @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
-    #chips{position:relative;z-index:1;padding:0 32px 16px;display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;}
+    #chips{position:relative;z-index:1;padding:0 32px 12px;display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;}
     .chip{font-size:13px;color:var(--t3);border:1px solid var(--navy-bd);background:transparent;padding:7px 16px;border-radius:20px;cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
     .chip:hover{color:var(--gold);border-color:var(--gold-dim);background:var(--gold-faint);}
     .input-area{position:relative;z-index:10;flex-shrink:0;padding:16px 32px 22px;border-top:1px solid var(--navy-bd);background:var(--navy);display:flex;gap:12px;align-items:flex-end;}
@@ -71,14 +71,14 @@
   .status-txt{font-size:11px;}
   .bubble{font-size:14px;line-height:1.65;padding:12px 14px;}
   .wtag{font-size:9px;}
-  #chips{padding:8px 16px 12px;gap:6px;}
+  #chips{padding:8px 16px 8px;gap:6px;}
   .chip{font-size:12px;padding:8px 14px;}
-  textarea{font-size:15px;}
+  textarea{font-size:16px;}
   .send-btn{width:44px;height:44px;}
   .av{width:32px;height:32px;}
-  footer{font-size:10px;padding-bottom:env(safe-area-inset-bottom,10px);}
-  #messages{padding:16px 16px 0;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-  .input-area{position:sticky;bottom:0;left:0;right:0;padding:10px 16px env(safe-area-inset-bottom,16px);background:var(--navy);}
+  footer{display:none;}
+  #messages{padding:12px 16px;flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .input-area{flex-shrink:0;padding:8px 16px 24px;background:var(--navy);border-top:1px solid var(--navy-bd);}
 }
   </style>
 </head>
