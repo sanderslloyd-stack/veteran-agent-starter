@@ -14,7 +14,7 @@
       --teal:#2DD4BF; --t1:#F0EDE8; --t2:#9BA8BB; --t3:#546070; --t4:#2e3d4f;
     }
     html,body{height:100%;background:var(--navy);color:var(--t1);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;}
-    body{display:flex;flex-direction:column;height:100vh;max-height:100dvh;}
+    body{display:flex;flex-direction:column;height:100dvh;overflow:hidden;}
     body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,168,76,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.025) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;z-index:0;}
     header{position:relative;z-index:10;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:76px;border-bottom:1px solid var(--navy-bd);background:var(--navy);}
     .h-left{display:flex;align-items:center;gap:18px;}
@@ -79,6 +79,24 @@
   .send-btn{width:44px;height:44px;}
   .av{width:32px;height:32px;}
   footer{font-size:10px;padding-bottom:10px;}
+}
+    @media (max-width: 768px) {
+  body {
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  .input-area {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
   </style>
 </head>
