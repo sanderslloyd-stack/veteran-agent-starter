@@ -2,201 +2,796 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
-  <title>FORGE · Sanōva AI</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"
+  />
+  <title>FORGE · Veteran AI Builder Program</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --navy:#0B1628; --navy-mid:#111f35; --navy-light:#172844; --navy-bd:#1e3352;
-      --gold:#C9A84C; --gold-lt:#e8c876; --gold-dim:#7a6030; --gold-faint:rgba(201,168,76,0.07);
-      --teal:#2DD4BF; --t1:#F0EDE8; --t2:#9BA8BB; --t3:#546070; --t4:#2e3d4f;
+
+    :root{
+      --ink:#0F1B2D;
+      --ink-2:#172338;
+      --ink-3:#22324A;
+      --line:#31435E;
+
+      --bone:#F4EFE6;
+      --stone:#BCC5D1;
+      --muted:#8390A4;
+      --faint:#566377;
+
+      --brass:#B6924D;
+      --brass-soft:#D4B06C;
+      --brick:#9A4338;
+
+      --surface:rgba(255,255,255,0.03);
+      --surface-2:rgba(255,255,255,0.05);
+      --chip:rgba(255,255,255,0.025);
+      --shadow:0 12px 28px rgba(0,0,0,0.24);
     }
-    html { height: 100%; }
-    body {
-      height: 100%;
-      background: var(--navy);
-      color: var(--t1);
-      font-family: 'DM Sans', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      display: flex;
-      flex-direction: column;
+
+    html, body { height: 100%; }
+
+    body{
+      height: var(--app-height, 100dvh);
       overflow: hidden;
+      display:flex;
+      flex-direction:column;
+      background:
+        radial-gradient(circle at top, #17253c 0%, var(--ink) 52%);
+      color: var(--bone);
+      font-family: "DM Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
-    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,168,76,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.025) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;z-index:0;}
-    header{position:relative;z-index:10;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:76px;border-bottom:1px solid var(--navy-bd);background:var(--navy);}
-    .h-left{display:flex;align-items:center;gap:18px;}
-    .logomark{width:44px;height:44px;border:1px solid var(--gold-dim);border-radius:10px;display:flex;align-items:center;justify-content:center;}
-    .logomark svg{width:22px;height:22px;}
-    .brand-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--gold);letter-spacing:0.2em;line-height:1;}
-    .brand-sub{font-size:11px;font-weight:300;color:var(--t3);letter-spacing:0.14em;text-transform:uppercase;margin-top:3px;}
-    .status-pill{display:flex;align-items:center;gap:8px;background:var(--gold-faint);border:1px solid rgba(201,168,76,0.14);border-radius:20px;padding:6px 16px;}
-    .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2.5s ease-in-out infinite;}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-    .status-txt{font-size:12px;color:var(--t2);letter-spacing:0.05em;}
-    .h-right{font-size:12px;color:var(--t4);letter-spacing:0.04em;}
-    #messages{position:relative;z-index:1;flex:1;min-height:0;overflow-y:auto;padding:24px 32px 16px;display:flex;flex-direction:column;gap:16px;scrollbar-width:thin;scrollbar-color:var(--navy-light) transparent;}
-    #messages::-webkit-scrollbar{width:3px;}
-    #messages::-webkit-scrollbar-thumb{background:var(--navy-light);border-radius:2px;}
-    .msg{display:flex;gap:16px;animation:fadeUp 0.22s ease-out both;}
-    .msg.user{flex-direction:row-reverse;margin-left:auto;max-width:720px;}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-    .av{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;}
-    .msg.agent .av{background:var(--navy-light);border:1px solid var(--navy-bd);}
-    .msg.agent .av svg{width:18px;height:18px;}
-    .msg.user .av{background:var(--navy-mid);border:1px solid var(--navy-bd);font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--gold-dim);}
-    .bubble{padding:16px 20px;font-size:15px;line-height:1.75;max-width:700px;}
-    .msg.agent .bubble{background:var(--navy-mid);border:1px solid var(--navy-bd);border-left:2px solid var(--gold-dim);border-radius:2px 14px 14px 14px;color:var(--t1);}
-    .msg.user .bubble{background:var(--navy-light);border:1px solid rgba(201,168,76,0.18);border-radius:14px 2px 14px 14px;color:var(--t1);}
-    .bubble strong{color:var(--gold-lt);font-weight:500;}
-    .wtag{display:inline-block;font-size:10px;font-weight:500;color:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:2px 9px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;}
-    .typing{display:flex;gap:5px;align-items:center;padding:3px 0;}
-    .typing span{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:bounce 1.2s ease-in-out infinite;}
-    .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
-    @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
-    #chips{position:relative;z-index:1;padding:0 32px 12px;display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;}
-    .chip{font-size:13px;color:var(--t3);border:1px solid var(--navy-bd);background:transparent;padding:7px 16px;border-radius:20px;cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
-    .chip:hover{color:var(--gold);border-color:var(--gold-dim);background:var(--gold-faint);}
-    .input-area{position:relative;z-index:10;flex-shrink:0;padding:16px 32px 22px;border-top:1px solid var(--navy-bd);background:var(--navy);display:flex;gap:12px;align-items:flex-end;}
-    .input-wrap{flex:1;background:var(--navy-mid);border:1px solid var(--navy-bd);border-radius:12px;padding:13px 18px;display:flex;align-items:flex-end;transition:border-color 0.2s;}
-    .input-wrap:focus-within{border-color:var(--gold-dim);}
-    textarea{flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:400;resize:none;line-height:1.6;max-height:140px;scrollbar-width:none;}
-    textarea::placeholder{color:var(--t4);}
-    textarea::-webkit-scrollbar{display:none;}
-    .send-btn{width:48px;height:48px;border-radius:11px;background:var(--gold);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;}
-    .send-btn:hover:not(:disabled){background:var(--gold-lt);transform:translateY(-1px);}
-    .send-btn:active:not(:disabled){transform:translateY(0);}
-    .send-btn:disabled{background:var(--navy-light);cursor:not-allowed;}
-    .send-btn svg{width:18px;height:18px;}
-    footer{position:relative;z-index:1;text-align:center;padding:0 0 14px;font-size:11px;font-weight:300;color:var(--t4);letter-spacing:0.1em;text-transform:uppercase;flex-shrink:0;}
-    footer span{color:var(--gold-dim);}
-    @media (max-width: 768px) {
-      header{padding:0 16px;height:60px;}
-      .brand-name{font-size:20px;letter-spacing:0.15em;}
-      .brand-sub{display:none;}
-      .h-right{display:none;}
-      .status-pill{padding:4px 12px;}
-      .status-txt{font-size:11px;}
-      #messages{padding:12px 16px 8px;}
-      .bubble{font-size:14px;line-height:1.65;padding:12px 14px;}
-      .wtag{font-size:9px;}
-      #chips{padding:6px 16px 8px;gap:6px;}
-      .chip{font-size:12px;padding:8px 14px;}
-      textarea{font-size:16px;}
-      .send-btn{width:44px;height:44px;}
-      .av{width:32px;height:32px;}
-      footer{display:none;}
-      .input-area{padding:8px 16px 16px;}
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background-image:
+        linear-gradient(rgba(182,146,77,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(182,146,77,0.04) 1px, transparent 1px);
+      background-size: 72px 72px;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    header{
+      position:relative;
+      z-index:10;
+      flex-shrink:0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      padding:18px 28px;
+      border-bottom:1px solid rgba(188,197,209,0.12);
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+      backdrop-filter: blur(8px);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      min-width:0;
+    }
+
+    .mark-wrap{
+      width:48px;
+      height:48px;
+      flex-shrink:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:12px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(182,146,77,0.26);
+      box-shadow: var(--shadow);
+      color: var(--brass-soft);
+    }
+
+    .mark-wrap svg{
+      width:24px;
+      height:24px;
+      display:block;
+    }
+
+    .titles{
+      min-width:0;
+    }
+
+    .wordmark{
+      font-family:"Cormorant Garamond", serif;
+      font-size:30px;
+      line-height:1;
+      letter-spacing:0.18em;
+      font-weight:700;
+      color: var(--brass-soft);
+      text-transform:uppercase;
+    }
+
+    .subline{
+      margin-top:4px;
+      font-size:12px;
+      line-height:1.35;
+      color: var(--stone);
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+    }
+
+    .subline strong{
+      color: var(--bone);
+      font-weight:600;
+    }
+
+    .header-right{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+      gap:10px;
+      max-width:48%;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:11px;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      white-space:nowrap;
+      border:1px solid rgba(188,197,209,0.15);
+      color: var(--stone);
+      background: rgba(255,255,255,0.025);
+    }
+
+    .badge.live{
+      border-color: rgba(182,146,77,0.30);
+      color: var(--brass-soft);
+    }
+
+    .badge.host{
+      border-color: rgba(154,67,56,0.34);
+      color: #E2C9C4;
+      background: rgba(154,67,56,0.10);
+    }
+
+    .dot{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background: var(--brass-soft);
+      box-shadow: 0 0 0 0 rgba(212,176,108,0.7);
+      animation:pulse 2s infinite;
+      flex-shrink:0;
+    }
+
+    @keyframes pulse{
+      0% { box-shadow:0 0 0 0 rgba(212,176,108,0.55); }
+      70% { box-shadow:0 0 0 8px rgba(212,176,108,0); }
+      100% { box-shadow:0 0 0 0 rgba(212,176,108,0); }
+    }
+
+    #messages{
+      position:relative;
+      z-index:1;
+      flex:1;
+      min-height:0;
+      overflow-y:auto;
+      padding:28px 32px 10px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      scroll-behavior:smooth;
+      scrollbar-width:thin;
+      scrollbar-color: var(--line) transparent;
+    }
+
+    #messages::-webkit-scrollbar{ width:4px; }
+    #messages::-webkit-scrollbar-thumb{
+      background: var(--line);
+      border-radius:999px;
+    }
+
+    .msg{
+      display:flex;
+      gap:14px;
+      max-width:860px;
+      animation:fadeUp 0.24s ease-out both;
+    }
+
+    .msg.user{
+      align-self:flex-end;
+      flex-direction:row-reverse;
+    }
+
+    @keyframes fadeUp{
+      from{ opacity:0; transform:translateY(8px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+
+    .avatar{
+      width:40px;
+      height:40px;
+      flex-shrink:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:12px;
+      margin-top:2px;
+    }
+
+    .msg.agent .avatar{
+      color: var(--brass-soft);
+      background: rgba(255,255,255,0.025);
+      border:1px solid rgba(182,146,77,0.22);
+    }
+
+    .msg.user .avatar{
+      background: var(--ink-3);
+      border:1px solid rgba(188,197,209,0.14);
+      color: var(--bone);
+      font-family:"Cormorant Garamond", serif;
+      font-size:20px;
+      font-weight:700;
+      letter-spacing:0.04em;
+    }
+
+    .avatar svg{
+      width:20px;
+      height:20px;
+      display:block;
+    }
+
+    .bubble{
+      padding:18px 20px;
+      font-size:15px;
+      line-height:1.72;
+      letter-spacing:0.01em;
+      box-shadow: var(--shadow);
+    }
+
+    .msg.agent .bubble{
+      background: rgba(23,35,56,0.92);
+      border:1px solid rgba(188,197,209,0.12);
+      border-left:3px solid var(--brass);
+      border-radius:4px 16px 16px 16px;
+      color: var(--bone);
+    }
+
+    .msg.user .bubble{
+      background: rgba(34,50,74,0.92);
+      border:1px solid rgba(182,146,77,0.16);
+      border-radius:16px 4px 16px 16px;
+      color: var(--bone);
+    }
+
+    .bubble strong{
+      color: var(--brass-soft);
+      font-weight:600;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      margin-bottom:12px;
+      padding:3px 10px;
+      border-radius:999px;
+      font-size:10px;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      border:1px solid rgba(182,146,77,0.22);
+      color: var(--brass-soft);
+      background: rgba(182,146,77,0.06);
+    }
+
+    #chips{
+      position:relative;
+      z-index:1;
+      padding:4px 32px 14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      flex-shrink:0;
+    }
+
+    .chip{
+      appearance:none;
+      border:none;
+      outline:none;
+      cursor:pointer;
+      font:inherit;
+      font-size:13px;
+      padding:10px 14px;
+      border-radius:999px;
+      color: var(--stone);
+      background: var(--chip);
+      border:1px solid rgba(188,197,209,0.14);
+      transition:180ms ease;
+    }
+
+    .chip:hover{
+      transform:translateY(-1px);
+      border-color: rgba(182,146,77,0.28);
+      color: var(--bone);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .input-area{
+      position:relative;
+      z-index:10;
+      flex-shrink:0;
+      display:flex;
+      gap:12px;
+      align-items:flex-end;
+      padding:14px 32px 18px;
+      border-top:1px solid rgba(188,197,209,0.10);
+      background: linear-gradient(180deg, rgba(15,27,45,0.0), rgba(15,27,45,0.75) 24%, rgba(15,27,45,0.96));
+      backdrop-filter: blur(8px);
+    }
+
+    .input-wrap{
+      flex:1;
+      display:flex;
+      align-items:flex-end;
+      gap:10px;
+      padding:14px 16px;
+      border-radius:16px;
+      background: rgba(255,255,255,0.035);
+      border:1px solid rgba(188,197,209,0.12);
+    }
+
+    .input-wrap:focus-within{
+      border-color: rgba(182,146,77,0.34);
+      box-shadow: 0 0 0 1px rgba(182,146,77,0.16);
+    }
+
+    textarea{
+      width:100%;
+      border:none;
+      outline:none;
+      resize:none;
+      background:transparent;
+      color: var(--bone);
+      font-family:"DM Sans", sans-serif;
+      font-size:15px;
+      line-height:1.55;
+      max-height:140px;
+      scrollbar-width:none;
+    }
+
+    textarea::-webkit-scrollbar{ display:none; }
+
+    textarea::placeholder{
+      color: var(--faint);
+    }
+
+    .send-btn{
+      width:50px;
+      height:50px;
+      flex-shrink:0;
+      border:none;
+      border-radius:14px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(180deg, var(--brass-soft), var(--brass));
+      color: #112032;
+      box-shadow: var(--shadow);
+      transition:180ms ease;
+    }
+
+    .send-btn:hover:not(:disabled){
+      transform:translateY(-1px);
+      filter:brightness(1.04);
+    }
+
+    .send-btn:disabled{
+      cursor:not-allowed;
+      opacity:0.55;
+      transform:none;
+      filter:none;
+    }
+
+    .send-btn svg{
+      width:18px;
+      height:18px;
+      display:block;
+    }
+
+    footer{
+      position:relative;
+      z-index:1;
+      flex-shrink:0;
+      text-align:center;
+      padding:0 20px 14px;
+      font-size:11px;
+      line-height:1.4;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color: var(--muted);
+    }
+
+    footer strong{
+      color: var(--bone);
+      font-weight:600;
+    }
+
+    .typing{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:2px 0;
+    }
+
+    .typing span{
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background: var(--muted);
+      animation:bounce 1.2s infinite ease-in-out;
+    }
+
+    .typing span:nth-child(2){ animation-delay:0.18s; }
+    .typing span:nth-child(3){ animation-delay:0.36s; }
+
+    @keyframes bounce{
+      0%, 80%, 100% { transform:translateY(0); opacity:0.4; }
+      40% { transform:translateY(-5px); opacity:1; }
+    }
+
+    @media (max-width: 900px){
+      header{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .header-right{
+        max-width:none;
+        justify-content:flex-start;
+      }
+    }
+
+    @media (max-width: 768px){
+      header{
+        gap:14px;
+        padding:16px;
+      }
+
+      .brand{
+        width:100%;
+      }
+
+      .mark-wrap{
+        width:42px;
+        height:42px;
+      }
+
+      .mark-wrap svg{
+        width:20px;
+        height:20px;
+      }
+
+      .wordmark{
+        font-size:24px;
+        letter-spacing:0.16em;
+      }
+
+      .subline{
+        font-size:11px;
+        letter-spacing:0.06em;
+      }
+
+      .header-right{
+        width:100%;
+        gap:8px;
+      }
+
+      .badge{
+        font-size:10px;
+        padding:7px 10px;
+      }
+
+      #messages{
+        padding:18px 16px 8px;
+      }
+
+      .msg{
+        gap:10px;
+      }
+
+      .avatar{
+        width:34px;
+        height:34px;
+        border-radius:10px;
+      }
+
+      .avatar svg{
+        width:18px;
+        height:18px;
+      }
+
+      .bubble{
+        padding:14px 15px;
+        font-size:14px;
+        line-height:1.66;
+      }
+
+      #chips{
+        padding:4px 16px 10px;
+        gap:7px;
+      }
+
+      .chip{
+        font-size:12px;
+        padding:9px 12px;
+      }
+
+      .input-area{
+        padding:10px 16px 14px;
+      }
+
+      .input-wrap{
+        padding:12px 14px;
+        border-radius:14px;
+      }
+
+      textarea{
+        font-size:16px;
+      }
+
+      .send-btn{
+        width:46px;
+        height:46px;
+        border-radius:12px;
+      }
+
+      footer{
+        display:none;
+      }
     }
   </style>
 </head>
 <body>
-<header>
-  <div class="h-left">
-    <div class="logomark">
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round"/>
-        <path d="M2 17l10 5 10-5" stroke="#2DD4BF" stroke-width="1.5" stroke-linejoin="round" opacity="0.8"/>
-        <path d="M2 12l10 5 10-5" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round" opacity="0.35"/>
-      </svg>
-    </div>
-    <div>
-      <div class="brand-name">FORGE</div>
-      <div class="brand-sub">Sanōva AI · Veteran Agent Program</div>
-    </div>
-  </div>
-  <div class="status-pill"><div class="dot"></div><span class="status-txt">Online</span></div>
-  <div class="h-right">jason@sanova.ai</div>
-</header>
-<div id="messages">
-  <div class="msg agent">
-    <div class="av">
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round"/>
-        <path d="M2 17l10 5 10-5" stroke="#2DD4BF" stroke-width="1.5" stroke-linejoin="round" opacity="0.8"/>
-        <path d="M2 12l10 5 10-5" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round" opacity="0.35"/>
-      </svg>
-    </div>
-    <div class="bubble">
-      <div class="wtag">Forge · Live Agent</div><br>
-      <strong>Welcome to Forge.</strong><br><br>
-      Most AI programs teach you to use AI. Forge teaches you to build it, deploy it, and own it — the same way the military taught you to own your equipment, your mission, and your people.<br><br>
-      Every veteran who completes Tier 2 walks out with a live AI agent running at a real URL. Not a certificate. Not a login to someone else's platform. Infrastructure they built and control.<br><br>
-      Before we go further — what's your name or callsign, and what branch did you serve?
-    </div>
-  </div>
-</div>
-<div id="chips">
-  <button class="chip" onclick="useChip(this)">What do veterans build in Tier 2?</button>
-  <button class="chip" onclick="useChip(this)">What can I do with this after the workshop?</button>
-  <button class="chip" onclick="useChip(this)">What makes this different from ChatGPT?</button>
-  <button class="chip" onclick="useChip(this)">Tell me about the investment case</button>
-</div>
-<div class="input-area">
-  <div class="input-wrap">
-    <textarea id="input" rows="1" placeholder="Ask Forge anything…" autocomplete="off"></textarea>
-  </div>
-  <button class="send-btn" id="sendBtn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="22" y1="2" x2="11" y2="13"/>
-      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-    </svg>
-  </button>
-</div>
-<footer>Powered by <span>Sanōva AI</span> · Forge Veteran Agent Program</footer>
-<script>
-  let history=[],busy=false;
-  const msgs=document.getElementById('messages'),input=document.getElementById('input'),sendBtn=document.getElementById('sendBtn'),chipsEl=document.getElementById('chips');
+  <header>
+    <div class="brand">
+      <div class="mark-wrap" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M6 4.5H17.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 4.5V19.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 11.5H14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10.2 19.5V15.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14.8 4.5V2.7L19 3.6L14.8 4.5Z" fill="#9A4338"/>
+        </svg>
+      </div>
 
-  function setHeight(){
-    document.body.style.height=window.innerHeight+'px';
-  }
-  setHeight();
-  window.addEventListener('resize',setHeight);
+      <div class="titles">
+        <div class="wordmark">FORGE</div>
+        <div class="subline"><strong>Veteran AI Builder Program</strong> · A Sanōva AI Program</div>
+      </div>
+    </div>
 
-  input.addEventListener('input',()=>{input.style.height='auto';input.style.height=Math.min(input.scrollHeight,120)+'px';});
-  input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
-  sendBtn.addEventListener('click',send);
-  function useChip(el){input.value=el.textContent;chipsEl.style.display='none';send();}
-  function av(){return'<div class="av" style="background:var(--navy-light);border:1px solid var(--navy-bd)"><svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17l10 5 10-5" stroke="#2DD4BF" stroke-width="1.5" stroke-linejoin="round" opacity="0.8"/><path d="M2 12l10 5 10-5" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round" opacity="0.35"/></svg></div>';}
-  function addMsg(role,html){
-    const w=document.createElement('div');
-    w.className='msg '+role;
-    if(role==='agent'){
-      w.innerHTML=av()+'<div class="bubble">'+html+'</div>';
-    }else{
-      w.innerHTML='<div class="av" style="background:var(--navy-mid);border:1px solid var(--navy-bd);font-family:Cormorant Garamond,serif;font-size:17px;font-weight:600;color:var(--gold-dim)">J</div><div class="bubble">'+html+'</div>';
+    <div class="header-right">
+      <div class="badge live">
+        <span class="dot"></span>
+        Pilot demo live
+      </div>
+      <div class="badge host">Pilot hosted at Patriots’ Hall</div>
+    </div>
+  </header>
+
+  <div id="messages">
+    <div class="msg agent">
+      <div class="avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M6 4.5H17.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 4.5V19.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 11.5H14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10.2 19.5V15.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14.8 4.5V2.7L19 3.6L14.8 4.5Z" fill="#9A4338"/>
+        </svg>
+      </div>
+
+      <div class="bubble">
+        <div class="eyebrow">Forge Guide</div><br>
+        <strong>Welcome to Forge.</strong><br><br>
+        Forge is a veteran AI builder program created by Sanōva AI and launching with a pilot cohort at Patriots’ Hall.<br><br>
+        We help veterans move beyond the chat and into practical tools they can build, deploy, and own — whether they are transitioning, building a business, or learning how AI fits into civilian work.<br><br>
+        This is hands-on, respectful, and outcome-driven. <strong>Not a certificate. Not a login to someone else’s platform.</strong> Real infrastructure they build and control.<br><br>
+        What should I call you, and what are you hoping to build or learn?
+      </div>
+    </div>
+  </div>
+
+  <div id="chips">
+    <button class="chip" onclick="useChip(this)">Is this beginner-friendly?</button>
+    <button class="chip" onclick="useChip(this)">What will I build?</button>
+    <button class="chip" onclick="useChip(this)">How can this help after transition?</button>
+    <button class="chip" onclick="useChip(this)">How do I join the pilot?</button>
+  </div>
+
+  <div class="input-area">
+    <div class="input-wrap">
+      <textarea
+        id="input"
+        rows="1"
+        autocomplete="off"
+        placeholder="Ask about the program, the pilot, or what you can build..."
+      ></textarea>
+    </div>
+
+    <button class="send-btn" id="sendBtn" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </div>
+
+  <footer>
+    <strong>Forge</strong> · A Sanōva AI Program · Pilot cohort hosted at Patriots’ Hall
+  </footer>
+
+  <script>
+    const MARK_SVG = `
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 4.5H17.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M6 4.5V19.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M6 11.5H14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M10.2 19.5V15.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M14.8 4.5V2.7L19 3.6L14.8 4.5Z" fill="#9A4338"></path>
+      </svg>
+    `;
+
+    let history = [];
+    let busy = false;
+
+    const msgs = document.getElementById("messages");
+    const input = document.getElementById("input");
+    const sendBtn = document.getElementById("sendBtn");
+    const chipsEl = document.getElementById("chips");
+
+    function setAppHeight() {
+      const height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty("--app-height", `${Math.round(height)}px`);
     }
-    msgs.appendChild(w);msgs.scrollTop=msgs.scrollHeight;
-  }
-  function addTyping(){
-    const w=document.createElement('div');
-    w.className='msg agent';w.id='typing';
-    w.innerHTML=av()+'<div class="bubble" style="background:var(--navy-mid);border:1px solid var(--navy-bd);border-left:2px solid var(--gold-dim)"><div class="typing"><span></span><span></span><span></span></div></div>';
-    msgs.appendChild(w);msgs.scrollTop=msgs.scrollHeight;
-  }
-  function removeTyping(){const t=document.getElementById('typing');if(t)t.remove();}
-  function fmt(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');}
-  async function send(){
-    const text=input.value.trim();
-    if(!text||busy)return;
-    busy=true;sendBtn.disabled=true;chipsEl.style.display='none';
-    input.value='';input.style.height='auto';
-    addMsg('user',fmt(text));
-    addTyping();
-    try{
-      const res=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,history:history})});
-      const data=await res.json();
-      removeTyping();
-      if(data.error){addMsg('agent','<span style="color:#E24B4A">'+data.error+'</span>');}
-      else{history=data.history;addMsg('agent',fmt(data.reply));}
-    }catch(e){
-      removeTyping();
-      addMsg('agent','<span style="color:#E24B4A">Connection error — please try again.</span>');
+
+    setAppHeight();
+    window.addEventListener("resize", setAppHeight);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", setAppHeight);
+      window.visualViewport.addEventListener("scroll", setAppHeight);
     }
-    busy=false;sendBtn.disabled=false;input.focus();
-  }
-</script>
+
+    function autoSize() {
+      input.style.height = "auto";
+      input.style.height = Math.min(input.scrollHeight, 140) + "px";
+    }
+
+    input.addEventListener("input", autoSize);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        send();
+      }
+    });
+
+    sendBtn.addEventListener("click", send);
+
+    function useChip(el) {
+      input.value = el.textContent.trim();
+      autoSize();
+      send();
+    }
+
+    function agentAvatar() {
+      return `<div class="avatar" aria-hidden="true">${MARK_SVG}</div>`;
+    }
+
+    function userAvatar() {
+      return `<div class="avatar" aria-hidden="true">J</div>`;
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function fmt(text) {
+      return escapeHtml(text)
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\n/g, "<br>");
+    }
+
+    function addMsg(role, html) {
+      const node = document.createElement("div");
+      node.className = `msg ${role}`;
+
+      if (role === "agent") {
+        node.innerHTML = `${agentAvatar()}<div class="bubble">${html}</div>`;
+      } else {
+        node.innerHTML = `${userAvatar()}<div class="bubble">${html}</div>`;
+      }
+
+      msgs.appendChild(node);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function addTyping() {
+      const node = document.createElement("div");
+      node.className = "msg agent";
+      node.id = "typing";
+      node.innerHTML = `
+        ${agentAvatar()}
+        <div class="bubble">
+          <div class="typing"><span></span><span></span><span></span></div>
+        </div>
+      `;
+      msgs.appendChild(node);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function removeTyping() {
+      const t = document.getElementById("typing");
+      if (t) t.remove();
+    }
+
+    async function send() {
+      const text = input.value.trim();
+      if (!text || busy) return;
+
+      busy = true;
+      sendBtn.disabled = true;
+      chipsEl.style.display = "none";
+
+      input.value = "";
+      input.style.height = "auto";
+
+      addMsg("user", fmt(text));
+      addTyping();
+
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text, history })
+        });
+
+        const data = await res.json();
+        removeTyping();
+
+        if (data.error) {
+          addMsg("agent", `<span style="color:#E2A39A">${escapeHtml(data.error)}</span>`);
+        } else {
+          history = data.history || history;
+          addMsg("agent", fmt(data.reply || ""));
+        }
+      } catch (err) {
+        removeTyping();
+        addMsg("agent", `<span style="color:#E2A39A">Connection error — please try again.</span>`);
+      }
+
+      busy = false;
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  </script>
 </body>
 </html>
